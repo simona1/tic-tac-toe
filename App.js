@@ -2,11 +2,12 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { useReducer } from "react";
 
+import Board from "./Board";
 import make2dArray from "./make2dArray";
 
 function makeInitialBoardState() {
   return {
-    board: make2dArray(3, 3, null),
+    board: make2dArray(3, 3, "X"),
   };
 }
 
@@ -24,7 +25,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Tic-Tac-Toe</Text>
-      <Text>{JSON.stringify(state, null, 2)}</Text>
+      <Board board={state.board} />
       <StatusBar style="auto" />
     </View>
   );
@@ -41,5 +42,6 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 30,
     fontWeight: 600,
+    margin: 20,
   },
 });
