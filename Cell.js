@@ -1,9 +1,16 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function Cell({ cellValue }) {
+export default function Cell({ cellValue, columnIndex, dispatch, rowIndex }) {
+  const Container = cellValue ? View : TouchableOpacity;
+
   return (
     <View style={styles.container}>
-      {cellValue != null && <Text style={styles.text}>{cellValue}</Text>}
+      <Container
+        style={styles.container}
+        onPress={() => dispatch({ type: "move", rowIndex, columnIndex })}
+      >
+        {cellValue != null && <Text style={styles.text}>{cellValue}</Text>}
+      </Container>
     </View>
   );
 }
