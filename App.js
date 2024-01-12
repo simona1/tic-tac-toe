@@ -3,7 +3,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useReducer } from "react";
 
 import Board from "./Board";
+import computeGameOutcome from "./computeGameOutcome";
 import copy2dArray from "./copy2dArray";
+import GameStatus from "./GameStatus";
+import getPlayerToMove from "./getPlayerToMove";
 import make2dArray from "./make2dArray";
 
 function makeInitialBoardState() {
@@ -16,18 +19,31 @@ function makeInitialBoardState() {
 function reducer(state, action) {
   switch (action.type) {
     case "move": {
+      if (state.gameOver) {
+        return state;
+      }
       const newBoard = copy2dArray(state.board);
-      newBoard[action.rowIndex][action.columnIndex] =
-        state.moveCount % 2 === 0 ? "X" : "O";
+      newBoard[action.rowIndex][action.columnIndex] = getPlayerToMove(
+        state.moveCount
+      );
+
+      const { gameOver, winner } = computeGameOutcome(newBoard);
 
       return {
         ...state,
         board: newBoard,
         moveCount: state.moveCount + 1,
+        gameOver,
+        winner,
       };
     }
     case "reset": {
-      return makeInitialBoardState();
+      return {
+        board: make2dArray(3, 3, null),
+        moveCount: 0,
+        gameOver: false,
+        winner: null,
+      };
     }
   }
 }
@@ -43,7 +59,12 @@ export default function App() {
     <View style={styles.container}>
       <Text style={styles.heading}>Tic-Tac-Toe</Text>
       <Board board={state.board} dispatch={dispatch} />
-      {state.moveCount === 9 ? (
+      <GameStatus
+        winner={state.winner}
+        gameOver={state.gameOver}
+        moveCount={state.moveCount}
+      />
+      {state.gameOver ? (
         <TouchableOpacity
           style={styles.button}
           onPress={() => dispatch({ type: "reset" })}
