@@ -2,16 +2,16 @@ import { StyleSheet, View } from "react-native";
 
 import Cell from "./Cell";
 
-export default function Row({ cellValues, dispatch, rowIndex }) {
+export default function Row({ cellValues, dispatch, gameOver, rowIndex }) {
   return (
     <View style={styles.container}>
       {cellValues.map((cellValue, columnIndex) => (
         <Cell
           cellValue={cellValue}
-          columnIndex={columnIndex}
-          dispatch={dispatch}
           key={columnIndex}
-          rowIndex={rowIndex}
+          onPress={() =>
+            gameOver ? null : dispatch({ type: "move", rowIndex, columnIndex })
+          }
         />
       ))}
     </View>
